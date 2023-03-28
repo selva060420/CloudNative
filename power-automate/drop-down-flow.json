@@ -1,0 +1,722 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "attributes": {
+    "class": "ms-fontColor-neutralPrimary"
+  },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "display": "=if([$SampleStatus]=='New','none','inherit')",
+        "position": "relative",
+        "padding": "7px"
+      },
+      "children": [
+        {
+          "elmType": "span",
+          "attributes": {
+            "iconName": "=if(startsWith([$SampleStatus],'Pending'), 'VisioDiagram', if([$SampleStatus]=='Completed','Completed', 'ErrorBadge'))",
+            "class": "ms-font-xl"
+          }
+        },
+        {
+          "elmType": "span",
+          "attributes": {
+            "class": "ms-font-l"
+          },
+          "style": {
+            "padding-left": "4px"
+          },
+          "txtContent": "=if(startsWith([$SampleStatus],'Pending'), 'In Progress', if(startsWith([$SampleStatus],'Rejected'),'Rejected', 'Completed'))"
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "right": "0",
+            "bottom": "0"
+          },
+          "customCardProps": {
+            "openOnEvent": "hover",
+            "isBeakVisible": true,
+            "directionalHint": "bottomCenter",
+            "formatter": {
+              "elmType": "div",
+              "style": {
+                "display": "flex",
+                "padding": "7px",
+                "background-color": "#3b2feb",
+                "flex-direction": "column"
+              },
+              "children": [
+                {
+                  "elmType": "div",
+                  "style": {
+                    "padding": "15px 40px 20px 15px",
+                    "background-color": "#191919"
+                  },
+                  "children": [
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "div",
+                          "style": {
+                            "font-size": "20px",
+                            "font-weight": "550",
+                            "text-align": "center",
+                            "margin-bottom": "15px"
+                          },
+                          "txtContent": "EDM Release Flow",
+                          "attributes": {
+                            "class": "ms-fontColor-pink"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "StatusCircleCheckmark",
+                            "class": "ms-fontColor-green"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "ms-fontColor-green"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Release Triggered",
+                          "attributes": {
+                            "class": "ms-fontColor-green"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "ms-fontColor-green"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 1', 'CircleRing',if([$SampleStatus]=='Rejected Gate 1', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 1', 'yellow',if([$SampleStatus]=='Rejected Gate 1', 'red',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 1', 'yellow',if([$SampleStatus]=='Rejected Gate 1', 'red',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 1', '',if([$SampleStatus]=='Rejected Gate 1', '',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 1', '',if([$SampleStatus]=='Rejected Gate 1', '',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Release Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 1', 'yellow',if([$SampleStatus]=='Rejected Gate 1', 'red',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 1', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 1', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 2' || [$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 2' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6'  || [$SampleStatus]=='Rejected Gate 7'  || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 2', 'CircleRing',if([$SampleStatus]=='Rejected Gate 2', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 2', 'yellow',if([$SampleStatus]=='Rejected Gate 2', 'red',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 2', 'yellow',if([$SampleStatus]=='Rejected Gate 2', 'red',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 2', '',if([$SampleStatus]=='Rejected Gate 2', '',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 2', '',if([$SampleStatus]=='Rejected Gate 2', '',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Code Freeze Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 2', 'yellow',if([$SampleStatus]=='Rejected Gate 2', 'red',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 2', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 2', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 3' || [$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 3' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 3', 'CircleRing',if([$SampleStatus]=='Rejected Gate 3', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 3', 'yellow',if([$SampleStatus]=='Rejected Gate 3', 'red',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 3', 'yellow',if([$SampleStatus]=='Rejected Gate 3', 'red',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 3', '',if([$SampleStatus]=='Rejected Gate 3', '',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 3', '',if([$SampleStatus]=='Rejected Gate 3', '',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Jira Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 3', 'yellow',if([$SampleStatus]=='Rejected Gate 3', 'red',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 3', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 3', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 4' || [$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 4' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 4', 'CircleRing',if([$SampleStatus]=='Rejected Gate 4', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 4', 'yellow',if([$SampleStatus]=='Rejected Gate 4', 'red',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 4', 'yellow',if([$SampleStatus]=='Rejected Gate 4', 'red',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 4', '',if([$SampleStatus]=='Rejected Gate 4', '',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 4', '',if([$SampleStatus]=='Rejected Gate 4', '',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Pipeline Status Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 4', 'yellow',if([$SampleStatus]=='Rejected Gate 4', 'red',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 4', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 4', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 5' || [$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 5' || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 5', 'CircleRing',if([$SampleStatus]=='Rejected Gate 5', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 5', 'yellow',if([$SampleStatus]=='Rejected Gate 5', 'red',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 5', 'yellow',if([$SampleStatus]=='Rejected Gate 5', 'red',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 5', '',if([$SampleStatus]=='Rejected Gate 5', '',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 5', '',if([$SampleStatus]=='Rejected Gate 5', '',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Minus Build Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 5', 'yellow',if([$SampleStatus]=='Rejected Gate 5', 'red',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 5', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 5', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 6' || [$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10'  || [$SampleStatus]=='Rejected Gate 6' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 6', 'CircleRing',if([$SampleStatus]=='Rejected Gate 6', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 6', 'yellow',if([$SampleStatus]=='Rejected Gate 6', 'red',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 6', 'yellow',if([$SampleStatus]=='Rejected Gate 6', 'red',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 6', '',if([$SampleStatus]=='Rejected Gate 6', '',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 6', '',if([$SampleStatus]=='Rejected Gate 6', '',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Security Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 6', 'yellow',if([$SampleStatus]=='Rejected Gate 6', 'red',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 6', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 6', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 7' || [$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 7' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 7', 'CircleRing',if([$SampleStatus]=='Rejected Gate 7', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 7', 'yellow',if([$SampleStatus]=='Rejected Gate 7', 'red',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 7', 'yellow',if([$SampleStatus]=='Rejected Gate 7', 'red',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 7', '',if([$SampleStatus]=='Rejected Gate 7', '',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 7', '',if([$SampleStatus]=='Rejected Gate 7', '',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "LSV Test Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 7', 'yellow',if([$SampleStatus]=='Rejected Gate 7', 'red',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 7', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 7', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 8' || [$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 8' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 8', 'CircleRing',if([$SampleStatus]=='Rejected Gate 8', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 8', 'yellow',if([$SampleStatus]=='Rejected Gate 8', 'red',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 8', 'yellow',if([$SampleStatus]=='Rejected Gate 8', 'red',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 8', '',if([$SampleStatus]=='Rejected Gate 8', '',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 8', '',if([$SampleStatus]=='Rejected Gate 8', '',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Plus Build Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 8', 'yellow',if([$SampleStatus]=='Rejected Gate 8', 'red',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 8', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 8', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 9' || [$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 9' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 9', 'CircleRing',if([$SampleStatus]=='Rejected Gate 9', 'ErrorBadge',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', 'StatusCircleCheckmark',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing'))))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 9', 'yellow',if([$SampleStatus]=='Rejected Gate 9', 'red',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 9', 'yellow',if([$SampleStatus]=='Rejected Gate 9', 'red',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 9', '',if([$SampleStatus]=='Rejected Gate 9', '',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', '16px',if([$SampleStatus]=='Completed', '16px',''))))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 9', '',if([$SampleStatus]=='Rejected Gate 9', '',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', '600',if([$SampleStatus]=='Completed', '600',''))))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "PRI Status Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 9', 'yellow',if([$SampleStatus]=='Rejected Gate 9', 'red',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "border-left-style": "solid",
+                            "text-align": "center",
+                            "margin-left": "21px"
+                          },
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 9', 'neutralSecondaryAlt',if([$SampleStatus]=='Rejected Gate 9', 'neutralSecondaryAlt',if([$SampleStatus]=='Pending Gate 10' || [$SampleStatus]=='Rejected Gate 10', 'green',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt'))))"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "elmType": "div",
+                      "children": [
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "padding-left": "15px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "=if([$SampleStatus]=='Pending Gate 10', 'CircleRing',if([$SampleStatus]=='Rejected Gate 10', 'ErrorBadge',if([$SampleStatus]=='Completed', 'StatusCircleCheckmark','CircleRing')))",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 10', 'yellow',if([$SampleStatus]=='Rejected Gate 10', 'red',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt')))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "16px",
+                            "font-weight": "600",
+                            "margin-left": "-16px"
+                          },
+                          "txtContent": " ",
+                          "attributes": {
+                            "iconName": "CircleRing",
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 10', 'yellow',if([$SampleStatus]=='Rejected Gate 10', 'red',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt')))"
+                          }
+                        },
+                        {
+                          "elmType": "span",
+                          "style": {
+                            "font-size": "=if([$SampleStatus]=='Pending Gate 10', '',if([$SampleStatus]=='Rejected Gate 10', '',if([$SampleStatus]=='Completed', '16px','')))",
+                            "font-weight": "=if([$SampleStatus]=='Pending Gate 10', '',if([$SampleStatus]=='Rejected Gate 10', '',if([$SampleStatus]=='Completed', '600','')))",
+                            "padding-left": "9px"
+                          },
+                          "txtContent": "Release To DevSI Approval",
+                          "attributes": {
+                            "class": "='ms-fontColor-' + if([$SampleStatus]=='Pending Gate 10', 'yellow',if([$SampleStatus]=='Rejected Gate 10', 'red',if([$SampleStatus]=='Completed', 'green','neutralSecondaryAlt')))"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
