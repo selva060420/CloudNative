@@ -1,4 +1,4 @@
-package collections;
+package com.interview.collections.concurrent;
 
 import java.util.*;
 import java.util.concurrent.*;

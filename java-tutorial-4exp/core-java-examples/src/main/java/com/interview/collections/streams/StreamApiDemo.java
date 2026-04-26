@@ -1,4 +1,4 @@
-package collections;
+package com.interview.collections.streams;
 
 import java.util.*;
 import java.util.stream.*;

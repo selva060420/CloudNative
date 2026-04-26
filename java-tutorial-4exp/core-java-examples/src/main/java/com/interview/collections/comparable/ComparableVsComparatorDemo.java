@@ -1,4 +1,4 @@
-package collections;
+package com.interview.collections.comparable;
 
 import java.util.*;
 
@@ -19,6 +19,9 @@ public class ComparableVsComparatorDemo {
             this.salary = salary;
             this.department = department;
         }
+
+        String getName() { return name; }
+        double getSalary() { return salary; }
 
         @Override
         public int compareTo(Employee other) {
@@ -68,8 +71,4 @@ public class ComparableVsComparatorDemo {
         sortedBySalary.addAll(employees);
         sortedBySalary.forEach(System.out::println);
     }
-
-    // Helper for method reference
-    static double getSalary(Employee e) { return e.salary; }
-    static String getName(Employee e) { return e.name; }
 }

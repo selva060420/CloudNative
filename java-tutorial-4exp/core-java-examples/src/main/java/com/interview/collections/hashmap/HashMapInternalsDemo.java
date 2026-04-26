@@ -1,4 +1,4 @@
-package collections;
+package com.interview.collections.hashmap;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -151,7 +151,7 @@ MIN_TREEIFY_CAPACITY = 64   // min table size for treeification
 - TreeMap does NOT allow null keys (needs comparison)
 - ConcurrentHashMap does NOT allow null keys or values
 
-→ See [HashMapInternalsDemo.java](src/HashMapInternalsDemo.java)
+→ See [HashMapInternalsDemo.java](../core-java-examples/src/main/java/com/interview/collections/hashmap/HashMapInternalsDemo.java)
 
 ---
 
@@ -172,7 +172,7 @@ MIN_TREEIFY_CAPACITY = 64   // min table size for treeification
 - Writes lock only the **specific bucket** being modified
 - `size()` is approximate during concurrent modifications — use `mappingCount()` for long return type
 
-→ See [ConcurrentHashMapDemo.java](src/ConcurrentHashMapDemo.java)
+→ See [ConcurrentHashMapDemo.java](../core-java-examples/src/main/java/com/interview/collections/concurrent/ConcurrentHashMapDemo.java)
 
 ---
 
@@ -228,7 +228,7 @@ Comparator<Employee> byNameThenSalary = Comparator.comparing(Employee::getName)
                                                    .thenComparingDouble(Employee::getSalary);
 ```
 
-→ See [ComparableVsComparatorDemo.java](src/ComparableVsComparatorDemo.java)
+→ See [ComparableVsComparatorDemo.java](../core-java-examples/src/main/java/com/interview/collections/comparable/ComparableVsComparatorDemo.java)
 
 ---
 
@@ -262,7 +262,7 @@ set.add(e1);
 set.contains(e2);  // FALSE! Different hashCode → different bucket
 ```
 
-→ See [EqualsHashCodeDemo.java](src/EqualsHashCodeDemo.java)
+→ See [EqualsHashCodeDemo.java](../core-java-examples/src/main/java/com/interview/collections/equalshashcode/EqualsHashCodeDemo.java)
 
 ---
 
@@ -344,7 +344,7 @@ Map<String, Double> maxSalaryByDept = employees.stream()
 | Iteration | External (for-each) | Internal (pipeline) |
 | Modification | Can modify source | Does not modify source |
 
-→ See [StreamApiDemo.java](src/StreamApiDemo.java)
+→ See [StreamApiDemo.java](../core-java-examples/src/main/java/com/interview/collections/streams/StreamApiDemo.java)
 
 ---
 
@@ -377,7 +377,7 @@ List<String> copy = List.copyOf(mutable);  // independent copy, immutable
 | `Collections.unmodifiableList()` | No (view) | Yes |
 | `List.copyOf()` (Java 10) | Yes | No |
 
-→ See [ImmutableCollectionsDemo.java](src/ImmutableCollectionsDemo.java)
+→ See [ImmutableCollectionsDemo.java](../core-java-examples/src/main/java/com/interview/collections/immutable/ImmutableCollectionsDemo.java)
 
 ---
 
@@ -553,11 +553,13 @@ Hint: Use `LinkedHashMap(capacity, loadFactor, accessOrder=true)` and override `
 
 ## Code Examples
 
-| File | Topic |
-|------|-------|
-| [HashMapInternalsDemo.java](src/HashMapInternalsDemo.java) | HashMap put/get flow, collision, resizing |
-| [ComparableVsComparatorDemo.java](src/ComparableVsComparatorDemo.java) | Natural vs custom ordering |
-| [EqualsHashCodeDemo.java](src/EqualsHashCodeDemo.java) | Contract violation demo |
-| [StreamApiDemo.java](src/StreamApiDemo.java) | Stream operations on collections |
-| [ConcurrentHashMapDemo.java](src/ConcurrentHashMapDemo.java) | Thread-safe map operations |
-| [ImmutableCollectionsDemo.java](src/ImmutableCollectionsDemo.java) | Java 9+ immutable collections |
+All code is in `core-java-examples/src/main/java/com/interview/collections/`:
+
+| File | Package | Topic |
+|------|---------|-------|
+| [HashMapInternalsDemo.java](../core-java-examples/src/main/java/com/interview/collections/hashmap/HashMapInternalsDemo.java) | `hashmap` | HashMap put/get flow, collision, resizing |
+| [ConcurrentHashMapDemo.java](../core-java-examples/src/main/java/com/interview/collections/concurrent/ConcurrentHashMapDemo.java) | `concurrent` | Thread-safe map operations |
+| [ComparableVsComparatorDemo.java](../core-java-examples/src/main/java/com/interview/collections/comparable/ComparableVsComparatorDemo.java) | `comparable` | Natural vs custom ordering |
+| [EqualsHashCodeDemo.java](../core-java-examples/src/main/java/com/interview/collections/equalshashcode/EqualsHashCodeDemo.java) | `equalshashcode` | Contract violation demo |
+| [StreamApiDemo.java](../core-java-examples/src/main/java/com/interview/collections/streams/StreamApiDemo.java) | `streams` | Stream operations on collections |
+| [ImmutableCollectionsDemo.java](../core-java-examples/src/main/java/com/interview/collections/immutable/ImmutableCollectionsDemo.java) | `immutable` | Java 9+ immutable collections |

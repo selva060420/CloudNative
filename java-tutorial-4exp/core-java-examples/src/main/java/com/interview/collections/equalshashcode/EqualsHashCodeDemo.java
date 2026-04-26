@@ -1,4 +1,4 @@
-package collections;
+package com.interview.collections.equalshashcode;
 
 import java.util.*;
 

@@ -1,6 +1,7 @@
-package collections;
+package com.interview.collections.immutable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Demonstrates immutable collections in Java 9+ and common pitfalls.
@@ -69,7 +70,7 @@ public class ImmutableCollectionsDemo {
         System.out.println("\n=== Stream to immutable collection ===");
         List<String> fromStream = List.of("c", "a", "b").stream()
                 .sorted()
-                .collect(java.util.stream.Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableList());
         System.out.println("Sorted immutable from stream: " + fromStream);
         try {
             fromStream.add("d");
