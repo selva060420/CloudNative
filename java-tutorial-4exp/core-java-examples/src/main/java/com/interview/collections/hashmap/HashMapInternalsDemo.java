@@ -1,6 +1,5 @@
 package com.interview.collections.hashmap;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +9,7 @@ import java.util.Map;
  */
 public class HashMapInternalsDemo {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // 1. Basic put/get — hashing flow
         Map<String, String> map = new HashMap<>(16, 0.75f);
         map.put("name", "Selva");
@@ -32,14 +31,15 @@ public class HashMapInternalsDemo {
 
         // 3. Collision demo — keys landing in same bucket
         System.out.println("\n=== Collision Demo ===");
-        Map<CollisionKey, String> collisionMap = new HashMap<>();
+        Map<Integer, String> collisionMap = new HashMap<>(16);
+        // Multiples of 16 all land in bucket 0: hash & (16-1) == 0
         for (int i = 0; i < 10; i++) {
-            collisionMap.put(new CollisionKey(i), "value-" + i);
+            collisionMap.put(i * 16, "value-" + i);
         }
-        System.out.println("All 10 keys have same hashCode but different equals");
+        System.out.println("Keys 0,16,32...144 all land in bucket 0 (hash & 15 == 0)");
         System.out.println("Bucket converts to Red-Black tree at 8+ entries");
         System.out.println("size: " + collisionMap.size());
-        System.out.println("get(key-5): " + collisionMap.get(new CollisionKey(5)));
+        System.out.println("get(80): " + collisionMap.get(80));
 
         // 4. Resizing demo
         System.out.println("\n=== Resizing Demo ===");
@@ -47,9 +47,11 @@ public class HashMapInternalsDemo {
         System.out.println("Initial capacity: 4, threshold: 3 (4 * 0.75)");
         for (int i = 1; i <= 5; i++) {
             resizeMap.put(i, i);
-            System.out.println("After put(" + i + ") → size=" + resizeMap.size()
-                    + ", capacity=" + getCapacity(resizeMap));
+            // Internal capacity starts at 4, threshold = 4 * 0.75 = 3
+            // When size exceeds 3, HashMap doubles capacity: 4 → 8
+            System.out.println("After put(" + i + ") → size=" + resizeMap.size());
         }
+        System.out.println("(Internally: capacity doubled from 4 → 8 after 4th insert exceeded threshold 3)");
 
         // 5. Null key handling
         System.out.println("\n=== Null Key ===");
@@ -61,27 +63,4 @@ public class HashMapInternalsDemo {
         System.out.println("'key' → null value: " + nullMap.get("key"));
     }
 
-    // Forces all keys into the same bucket to demonstrate collision/treeification
-    static class CollisionKey {
-        int id;
-
-        CollisionKey(int id) { this.id = id; }
-
-        @Override
-        public int hashCode() { return 1; } // same hash for all
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof CollisionKey && ((CollisionKey) o).id == this.id;
-        }
-    }
-
-    // Reflection to read internal capacity
-    @SuppressWarnings("unchecked")
-    static int getCapacity(Map<?, ?> map) throws Exception {
-        Field table = HashMap.class.getDeclaredField("table");
-        table.setAccessible(true);
-        Object[] arr = (Object[]) table.get(map);
-        return arr == null ? 0 : arr.length;
-    }
 }

@@ -43,7 +43,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | # | Topic | README | Code | Status |
 |---|-------|--------|------|--------|
 | 01 | Core Java | `01-core-java/README.md` | `core-java-examples/.../corejava/` | ❌ TODO |
-| 02 | Collections | `02-collections/README.md` | `core-java-examples/.../collections/` (6 demos) | ✅ DONE |
+| 02 | Collections | `02-collections/README.md` | `collections/` | ✅ DONE |
 | 03 | Java 8+ Features | `03-java8-plus/README.md` | `core-java-examples/.../java8plus/` | ❌ TODO |
 | 04 | Multithreading | `04-multithreading/README.md` | `core-java-examples/.../multithreading/` | ❌ TODO |
 | 05 | Exception Handling | `05-exception-handling/README.md` | `core-java-examples/.../exceptions/` | ❌ TODO |
