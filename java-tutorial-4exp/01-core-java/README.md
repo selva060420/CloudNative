@@ -515,6 +515,156 @@ Build a demo that shows:
 
 ---
 
+## Additional Core Concepts (Frequently Asked)
+
+### Enum — More Than Constants
+
+```java
+public enum HttpStatus {
+    OK(200, "Success"),
+    NOT_FOUND(404, "Not Found"),
+    INTERNAL_ERROR(500, "Server Error");
+
+    private final int code;
+    private final String message;
+
+    HttpStatus(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    public int getCode() { return code; }
+    public String getMessage() { return message; }
+}
+```
+
+**Interview points:**
+- Enums are implicitly `final` and extend `java.lang.Enum`
+- Thread-safe singleton: `enum Singleton { INSTANCE; }` — safest way (no reflection/serialization attacks)
+- Can implement interfaces, have abstract methods
+- `EnumSet` and `EnumMap` are highly optimized (bit-vector internally)
+
+### Pass by Value (Classic Trick Question)
+
+```java
+public static void main(String[] args) {
+    String name = "Selva";
+    changeName(name);
+    System.out.println(name); // Still "Selva" — String is immutable + pass by value
+
+    int[] arr = {1, 2, 3};
+    changeArray(arr);
+    System.out.println(arr[0]); // 99 — reference copied, but points to same object
+}
+
+static void changeName(String s) { s = "Changed"; }  // New reference, original untouched
+static void changeArray(int[] a) { a[0] = 99; }      // Same object modified via copied reference
+```
+
+**30-sec answer:** "Java is always pass-by-value. For primitives, the value is copied. For objects, the *reference* is copied — so you can modify the object's state, but reassigning the reference inside the method doesn't affect the caller."
+
+### Shallow vs Deep Copy
+
+```java
+// Shallow copy — nested objects still shared
+class Team implements Cloneable {
+    String name;
+    List<String> members; // Same list reference after clone!
+
+    @Override
+    protected Team clone() throws CloneNotSupportedException {
+        return (Team) super.clone(); // Shallow
+    }
+}
+
+// Deep copy — fully independent
+protected Team deepClone() throws CloneNotSupportedException {
+    Team copy = (Team) super.clone();
+    copy.members = new ArrayList<>(this.members); // New list
+    return copy;
+}
+```
+
+**When it matters:** Kafka message objects, cached DTOs — shallow copy leads to shared mutable state bugs across threads.
+
+### Java Records (Java 16+) and Sealed Classes (Java 17)
+
+```java
+// Record — immutable data carrier (replaces boilerplate POJOs)
+public record ApiResponse<T>(T data, int statusCode, String message) {
+    // Compact constructor for validation
+    public ApiResponse {
+        if (statusCode < 100 || statusCode > 599) throw new IllegalArgumentException("Invalid status");
+    }
+}
+
+// Sealed class — restricts which classes can extend
+public sealed interface Shape permits Circle, Rectangle, Triangle {}
+public record Circle(double radius) implements Shape {}
+public record Rectangle(double w, double h) implements Shape {}
+public record Triangle(double a, double b, double c) implements Shape {}
+
+// Pattern matching (Java 21)
+double area(Shape s) {
+    return switch (s) {
+        case Circle c -> Math.PI * c.radius() * c.radius();
+        case Rectangle r -> r.w() * r.h();
+        case Triangle t -> /* Heron's formula */ 0;
+    };
+}
+```
+
+**Interview points:**
+- Records auto-generate: constructor, getters, `equals()`, `hashCode()`, `toString()`
+- Records are implicitly `final` — can't extend them
+- Sealed classes enable exhaustive `switch` — compiler knows all subtypes
+
+### Inner Classes
+
+| Type | Has access to outer? | Use case |
+|------|---------------------|----------|
+| **Static nested** | No (only static members) | Helper class, Builder pattern |
+| **Member inner** | Yes (including private) | Iterator implementation |
+| **Local** (inside method) | Yes + effectively final locals | One-off logic |
+| **Anonymous** | Yes + effectively final locals | Pre-lambda callbacks |
+
+```java
+// Static nested — most common in production (no hidden outer reference)
+public class KafkaConfig {
+    public static class ProducerSettings { // No reference to KafkaConfig instance
+        String bootstrapServers;
+    }
+}
+
+// Anonymous → replaced by lambdas in modern Java
+Runnable old = new Runnable() { public void run() { System.out.println("old"); } };
+Runnable modern = () -> System.out.println("modern");
+```
+
+**Pitfall:** Non-static inner classes hold a hidden reference to the outer instance → memory leak if the inner object outlives the outer (common in Android, rare in backend).
+
+### Autoboxing / Unboxing Pitfalls
+
+```java
+// NullPointerException from unboxing null
+Integer count = null;
+int value = count; // NPE! Unboxing null → crash
+
+// Performance trap in loops
+Long sum = 0L;
+for (int i = 0; i < 1_000_000; i++) {
+    sum += i; // Creates ~1M Long objects (autoboxing)
+}
+// Fix: use primitive long sum = 0L;
+
+// Equality trap
+Integer a = 200, b = 200;
+System.out.println(a == b);      // false (outside [-128,127] cache)
+System.out.println(a.equals(b)); // true (always use .equals() for wrappers)
+```
+
+---
+
 ## Code Examples
 
 All code is in `core-java-examples/src/main/java/com/interview/corejava/`:
