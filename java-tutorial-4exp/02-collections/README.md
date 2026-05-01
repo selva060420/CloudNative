@@ -534,7 +534,42 @@ A microservice maintained a `HashMap<String, Subscription>` for active 5G subscr
 
 **Q1:** You have a microservice that caches 10 million user sessions in memory. Which Map implementation would you choose and why? What initial capacity would you set?
 
+**Answer:**
+
+I'd choose **`ConcurrentHashMap`**:
+- **Thread-safety without global locking** — microservices handle concurrent requests; CHM uses bucket-level locking so multiple threads read/write simultaneously
+- **No `ConcurrentModificationException`** — safe iteration while other threads modify the map
+- **Initial capacity:** `expectedSize / loadFactor` = `10,000,000 / 0.75` ≈ **13,333,334** — avoids expensive rehashing at startup
+- **Concurrency level:** Match your thread pool size (e.g., 128 for typical Tomcat/Netty)
+
+```java
+Map<String, Session> cache = new ConcurrentHashMap<>(13_333_334, 0.75f, 128);
+```
+
+> If you also need TTL-based eviction, use **Caffeine** (backed by ConcurrentHashMap internally) which gives size-based + time-based eviction out of the box.
+
+---
+
 **Q2:** In a Kubernetes pod running multiple threads, you need to maintain a sorted leaderboard that updates in real-time. Which collection would you use and how would you handle concurrent access?
+
+**Answer:**
+
+I'd use **`ConcurrentSkipListMap`**:
+- **Sorted** — maintains comparator ordering with O(log n) for put/get/remove
+- **Thread-safe** — lock-free reads, fine-grained locking for writes
+- **Real-time updates** — no need to re-sort; skip list maintains order on insertion
+
+```java
+// Key = score (negated for descending), Value = userId
+ConcurrentSkipListMap<CompositeKey, String> leaderboard = new ConcurrentSkipListMap<>();
+```
+
+Concurrent access handling:
+- Reads (`headMap`, `firstKey`) are lock-free — perfect for frequent leaderboard queries
+- Writes are O(log n) with minimal contention
+- For atomic score updates (read-modify-write), use `compute()` or wrap in a small synchronized block on the user's key
+
+> Alternative: If you need top-K only, `PriorityBlockingQueue` works but doesn't support efficient "get rank" queries.
 
 ---
 
@@ -547,7 +582,48 @@ Build a simple **LRU Cache** using `LinkedHashMap`:
 - Make it thread-safe using `Collections.synchronizedMap()`
 - Write a main method that proves the eviction works
 
-Hint: Use `LinkedHashMap(capacity, loadFactor, accessOrder=true)` and override `removeEldestEntry()`.
+**Solution:**
+
+```java
+public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+    private final int maxCapacity;
+
+    public LRUCache(int maxCapacity) {
+        super(maxCapacity, 0.75f, true); // accessOrder=true
+        this.maxCapacity = maxCapacity;
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > maxCapacity;
+    }
+
+    public static void main(String[] args) {
+        Map<String, String> cache = Collections.synchronizedMap(new LRUCache<>(5));
+
+        cache.put("A", "1");
+        cache.put("B", "2");
+        cache.put("C", "3");
+        cache.put("D", "4");
+        cache.put("E", "5");
+        System.out.println("Full cache: " + cache); // {A=1, B=2, C=3, D=4, E=5}
+
+        // Access A — moves it to most recent
+        cache.get("A");
+        System.out.println("After get(A): " + cache); // {B=2, C=3, D=4, E=5, A=1}
+
+        // Add F — evicts B (least recently used)
+        cache.put("F", "6");
+        System.out.println("After put(F): " + cache); // {C=3, D=4, E=5, A=1, F=6}
+        System.out.println("B evicted? " + !cache.containsKey("B")); // true
+    }
+}
+```
+
+**Key points:**
+- `accessOrder=true` makes `get()` move entries to the tail (most recent)
+- `removeEldestEntry()` is called after every `put()` — returns `true` when size exceeds capacity
+- `Collections.synchronizedMap()` wraps it for thread-safety (but iteration still needs external sync)
 
 ---
 
