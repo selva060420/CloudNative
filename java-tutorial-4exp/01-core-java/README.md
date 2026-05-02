@@ -500,18 +500,81 @@ Plus: replaced string concatenation with `StringBuilder` in the hot path, added 
 
 **Q1:** Your Kubernetes microservice processes 10K requests/sec. You notice GC pauses causing p99 latency spikes. How would you diagnose and fix this?
 
+**Answer:**
+
+**Diagnose:**
+1. Enable GC logging: `-Xlog:gc*:file=gc.log:time,uptime,level,tags`
+2. Check which collector is running (`-XX:+UseG1GC` vs default) and pause times in logs
+3. Monitor heap usage: `jstat -gcutil <pid>` or Prometheus + Grafana (JMX exporter)
+4. Look for frequent Full GCs or long Young GC pauses — indicates heap too small or too many long-lived objects promoted to Old Gen
+
+**Fix (progressive):**
+- **Tune heap:** Set `-Xms` = `-Xmx` (avoid resize pauses), typically 60-70% of container memory limit
+- **Switch to low-latency GC:** ZGC (`-XX:+UseZGC`) for sub-ms pauses, or G1 with `-XX:MaxGCPauseMillis=50`
+- **Reduce allocation rate:** Reuse objects (object pooling for hot paths), avoid autoboxing in loops, use `StringBuilder`
+- **Fix memory leaks:** Unbounded caches, static collections growing — profile with `jmap -histo` or async-profiler
+- **Right-size container:** K8s memory limit should be heap + metaspace + native memory + ~25% headroom
+
+---
+
 **Q2:** You're designing an immutable configuration object that loads from multiple sources (env vars, ConfigMap, DB). How would you implement the builder pattern while keeping the final object immutable?
+
+**Answer:**
+
+```java
+public final class AppConfig {
+    private final String dbUrl;
+    private final int maxConnections;
+    private final List<String> allowedOrigins;
+
+    private AppConfig(Builder builder) {
+        this.dbUrl = builder.dbUrl;
+        this.maxConnections = builder.maxConnections;
+        this.allowedOrigins = List.copyOf(builder.allowedOrigins); // defensive copy
+    }
+
+    public String getDbUrl() { return dbUrl; }
+    public int getMaxConnections() { return maxConnections; }
+    public List<String> getAllowedOrigins() { return allowedOrigins; } // already unmodifiable
+
+    public static class Builder {
+        private String dbUrl;
+        private int maxConnections = 10;
+        private List<String> allowedOrigins = new ArrayList<>();
+
+        public Builder fromEnv() {
+            this.dbUrl = System.getenv("DB_URL");
+            return this;
+        }
+        public Builder fromConfigMap(Map<String, String> cm) {
+            this.maxConnections = Integer.parseInt(cm.getOrDefault("MAX_CONN", "10"));
+            return this;
+        }
+        public Builder allowedOrigins(List<String> origins) {
+            this.allowedOrigins = origins;
+            return this;
+        }
+        public AppConfig build() {
+            Objects.requireNonNull(dbUrl, "DB_URL is required");
+            return new AppConfig(this);
+        }
+    }
+}
+// Usage: new AppConfig.Builder().fromEnv().fromConfigMap(cm).build();
+```
+
+**Key points:** Class is `final`, all fields `private final`, constructor is private, mutable collections defensively copied with `List.copyOf()`, builder is the only way to construct.
 
 ---
 
 ## Practice Task
 
 Build a demo that shows:
-1. JVM memory areas in action (stack vs heap)
-2. String pool behavior with `==` vs `.equals()` vs `intern()`
-3. Immutable class with defensive copying
-4. Serialization with `serialVersionUID` — prove that changing it breaks deserialization
-5. Generic method with bounded type parameter
+1. JVM memory areas in action (stack vs heap) → [JvmMemoryDemo.java](../core-java-examples/src/main/java/com/interview/corejava/jvm/JvmMemoryDemo.java)
+2. String pool behavior with `==` vs `.equals()` vs `intern()` → [StringPoolDemo.java](../core-java-examples/src/main/java/com/interview/corejava/strings/StringPoolDemo.java)
+3. Immutable class with defensive copying → See Q2 answer above
+4. Serialization with `serialVersionUID` — prove that changing it breaks deserialization → [SerializationDemo.java](../core-java-examples/src/main/java/com/interview/corejava/serialization/SerializationDemo.java)
+5. Generic method with bounded type parameter → [GenericsDemo.java](../core-java-examples/src/main/java/com/interview/corejava/generics/GenericsDemo.java)
 
 ---
 
