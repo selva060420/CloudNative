@@ -346,6 +346,25 @@ Implement a thread-safe bounded buffer (producer-consumer) using:
 
 Compare their behavior under 10 producers and 10 consumers with a buffer size of 5.
 
+### Solution
+
+**See:** `BoundedBufferDemo.java` — full runnable implementation with benchmark.
+
+**Key design decisions:**
+
+| Approach | Wake Strategy | Fairness | Boilerplate |
+|----------|--------------|----------|-------------|
+| `synchronized + wait/notifyAll` | Wakes ALL waiting threads (thundering herd) | No | Low |
+| `ReentrantLock + Condition` | Separate `notFull`/`notEmpty` → wakes only relevant threads | Configurable | Medium |
+| `BlockingQueue` | JDK-optimized (uses Lock + 2 Conditions internally) | Optional | Zero |
+
+**Behavior under 10P/10C/buffer=5:**
+- `synchronized`: Higher contention — `notifyAll()` wakes all 20 threads even when only 1 slot opens
+- `ReentrantLock`: Better throughput — `signal()` wakes exactly 1 producer OR 1 consumer
+- `BlockingQueue`: Best throughput — same as Lock approach but with JDK-level optimizations
+
+**Production recommendation:** Always use `BlockingQueue` unless you need custom behavior (e.g., priority, batching, metrics hooks).
+
 ---
 
 ## Code Examples
@@ -359,4 +378,5 @@ core-java-examples/src/main/java/com/interview/multithreading/
 ├── ExecutorServiceDemo.java      — Thread pools, custom ThreadPoolExecutor
 ├── CompletableFutureDemo.java    — Async chaining, combining, error handling
 ├── DeadlockDemo.java             — Deadlock creation and detection
+├── BoundedBufferDemo.java        — Producer-consumer: 3 approaches + benchmark
 ```
