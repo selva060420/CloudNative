@@ -329,11 +329,73 @@ kubectl exec <pod> -- jstack 1 > dump.txt
 
 **Q1:** "You have a microservice making 10 parallel HTTP calls to downstream services. How would you implement this with proper timeout and error handling?"
 
-**A:** Use `CompletableFuture.supplyAsync()` with a bounded ExecutorService. Apply `orTimeout(2, SECONDS)` per call. Use `allOf()` to wait for all, with `exceptionally()` on each to provide fallback. If any call is critical, use `anyOf()` pattern for fast-fail.
+**Answer:**
+
+```java
+ExecutorService pool = Executors.newFixedThreadPool(10);
+
+List<CompletableFuture<String>> futures = urls.stream()
+    .map(url -> CompletableFuture.supplyAsync(() -> httpCall(url), pool)
+        .orTimeout(2, TimeUnit.SECONDS)
+        .exceptionally(ex -> "fallback-for-" + url))
+    .toList();
+
+// Wait for all, collect results
+List<String> results = futures.stream()
+    .map(CompletableFuture::join)
+    .toList();
+
+pool.shutdown();
+```
+
+**Key points:**
+- Bounded pool (10 threads) prevents thread explosion
+- `orTimeout()` ensures no single call blocks forever
+- `exceptionally()` provides per-call fallback — one failure doesn't kill others
+- For critical calls, use `allOf()` + check individual results; for best-effort, filter out fallbacks
+
+---
 
 **Q2:** "How would you implement a rate limiter that's thread-safe?"
 
-**A:** Use `AtomicInteger` for a simple counter with `compareAndSet()` loop, or `Semaphore` with `tryAcquire(timeout)`. For sliding window, use `ConcurrentLinkedDeque` with timestamps. In production, prefer Resilience4j's `RateLimiter` which handles the concurrency internally.
+**Answer:**
+
+```java
+// Fixed-window rate limiter using AtomicInteger
+public class RateLimiter {
+    private final int maxRequests;
+    private final AtomicInteger counter = new AtomicInteger(0);
+    private volatile long windowStart = System.currentTimeMillis();
+    private final long windowMillis;
+
+    public RateLimiter(int maxRequests, long windowMillis) {
+        this.maxRequests = maxRequests;
+        this.windowMillis = windowMillis;
+    }
+
+    public boolean tryAcquire() {
+        long now = System.currentTimeMillis();
+        if (now - windowStart > windowMillis) {
+            synchronized (this) {
+                if (now - windowStart > windowMillis) { // double-check
+                    counter.set(0);
+                    windowStart = now;
+                }
+            }
+        }
+        return counter.incrementAndGet() <= maxRequests;
+    }
+}
+
+// Usage: RateLimiter limiter = new RateLimiter(100, 1000); // 100 req/sec
+// if (!limiter.tryAcquire()) return ResponseEntity.status(429).build();
+```
+
+**Key points:**
+- `AtomicInteger` for lock-free counting within a window
+- `volatile` + double-checked locking for window reset (rare write, frequent reads)
+- For sliding window: use `ConcurrentLinkedDeque<Long>` with timestamps, evict expired on each call
+- Production: use Resilience4j `RateLimiter` or Bucket4j (token bucket algorithm)
 
 ---
 
@@ -348,22 +410,81 @@ Compare their behavior under 10 producers and 10 consumers with a buffer size of
 
 ### Solution
 
-**See:** `BoundedBufferDemo.java` — full runnable implementation with benchmark.
+**Full runnable benchmark:** [`BoundedBufferDemo.java`](../core-java-examples/src/main/java/com/interview/multithreading/BoundedBufferDemo.java)
 
-**Key design decisions:**
+**Approach 1 — synchronized + wait/notifyAll:**
 
-| Approach | Wake Strategy | Fairness | Boilerplate |
-|----------|--------------|----------|-------------|
-| `synchronized + wait/notifyAll` | Wakes ALL waiting threads (thundering herd) | No | Low |
-| `ReentrantLock + Condition` | Separate `notFull`/`notEmpty` → wakes only relevant threads | Configurable | Medium |
-| `BlockingQueue` | JDK-optimized (uses Lock + 2 Conditions internally) | Optional | Zero |
+```java
+class SynchronizedBuffer {
+    private final Queue<Integer> queue = new LinkedList<>();
+    private final int capacity;
 
-**Behavior under 10P/10C/buffer=5:**
-- `synchronized`: Higher contention — `notifyAll()` wakes all 20 threads even when only 1 slot opens
-- `ReentrantLock`: Better throughput — `signal()` wakes exactly 1 producer OR 1 consumer
-- `BlockingQueue`: Best throughput — same as Lock approach but with JDK-level optimizations
+    SynchronizedBuffer(int capacity) { this.capacity = capacity; }
 
-**Production recommendation:** Always use `BlockingQueue` unless you need custom behavior (e.g., priority, batching, metrics hooks).
+    synchronized void put(int item) throws InterruptedException {
+        while (queue.size() == capacity) wait();  // block if full
+        queue.add(item);
+        notifyAll();  // wake ALL waiting threads (producers + consumers)
+    }
+
+    synchronized int take() throws InterruptedException {
+        while (queue.isEmpty()) wait();  // block if empty
+        int item = queue.poll();
+        notifyAll();  // wake ALL waiting threads
+        return item;
+    }
+}
+```
+
+**Approach 2 — ReentrantLock + Condition:**
+
+```java
+class LockConditionBuffer {
+    private final Queue<Integer> queue = new LinkedList<>();
+    private final int capacity;
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition notFull = lock.newCondition();
+    private final Condition notEmpty = lock.newCondition();
+
+    void put(int item) throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.size() == capacity) notFull.await();
+            queue.add(item);
+            notEmpty.signal();  // wake only ONE consumer
+        } finally { lock.unlock(); }
+    }
+
+    int take() throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) notEmpty.await();
+            int item = queue.poll();
+            notFull.signal();  // wake only ONE producer
+            return item;
+        } finally { lock.unlock(); }
+    }
+}
+```
+
+**Approach 3 — BlockingQueue (production choice):**
+
+```java
+// That's it. No custom class needed.
+BlockingQueue<Integer> buffer = new ArrayBlockingQueue<>(5);
+buffer.put(item);    // blocks if full
+buffer.take();       // blocks if empty
+```
+
+**Comparison under 10P/10C/buffer=5:**
+
+| Approach | Wake Strategy | Throughput | Use When |
+|----------|--------------|-----------|----------|
+| `synchronized` | `notifyAll()` → wakes all 20 threads | Slowest | Learning/legacy code |
+| `ReentrantLock` | `signal()` → wakes 1 relevant thread | Better | Need fairness/tryLock/timeout |
+| `BlockingQueue` | JDK-optimized Lock+Conditions | Best | Always in production |
+
+**Production recommendation:** Always use `BlockingQueue` unless you need custom behavior (priority, batching, metrics hooks).
 
 ---
 
