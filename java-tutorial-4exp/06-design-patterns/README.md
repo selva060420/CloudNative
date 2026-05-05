@@ -18,6 +18,19 @@ Design patterns are **reusable solutions to common software design problems**. T
 | **Adapter** | Structural | Make incompatible interfaces work together |
 | **Proxy** | Structural | Control access to an object |
 
+### Design Principles (asked alongside patterns)
+
+| Principle | One-liner |
+|-----------|-----------|
+| **S** — Single Responsibility | A class should have only one reason to change |
+| **O** — Open/Closed | Open for extension, closed for modification |
+| **L** — Liskov Substitution | Subtypes must be substitutable for their base types without breaking behavior |
+| **I** — Interface Segregation | Don't force clients to depend on methods they don't use |
+| **D** — Dependency Inversion | Depend on abstractions, not concretions |
+| **DRY** | Don't Repeat Yourself — extract common logic |
+| **KISS** | Keep It Simple, Stupid — avoid unnecessary complexity |
+| **YAGNI** | You Aren't Gonna Need It — don't build what's not required yet |
+
 ---
 
 ## 2. Why This Is Needed
