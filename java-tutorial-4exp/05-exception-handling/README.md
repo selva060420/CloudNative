@@ -321,54 +321,6 @@ public class GlobalExceptionHandler {
 
 ---
 
-**Q2:** "How do you handle checked exceptions in Stream pipelines without making the code ugly?"
-
-**Answer:**
-
-```java
-// Approach 1: Utility wrapper (most common)
-@FunctionalInterface
-public interface ThrowingFunction<T, R> {
-    R apply(T t) throws Exception;
-
-    static <T, R> Function<T, R> unchecked(ThrowingFunction<T, R> f) {
-        return t -> {
-            try { return f.apply(t); }
-            catch (Exception e) { throw new RuntimeException(e); }
-        };
-    }
-}
-
-// Usage:
-list.stream()
-    .map(ThrowingFunction.unchecked(item -> Files.readString(Path.of(item))))
-    .toList();
-
-// Approach 2: Collect successes and failures (Either pattern)
-record Result<T>(T value, Exception error) {
-    boolean isSuccess() { return error == null; }
-    static <T> Result<T> success(T v) { return new Result<>(v, null); }
-    static <T> Result<T> failure(Exception e) { return new Result<>(null, e); }
-}
-
-List<Result<String>> results = paths.stream()
-    .map(p -> {
-        try { return Result.success(Files.readString(p)); }
-        catch (IOException e) { return Result.<String>failure(e); }
-    })
-    .toList();
-
-List<String> successes = results.stream().filter(Result::isSuccess).map(Result::value).toList();
-List<Exception> failures = results.stream().filter(r -> !r.isSuccess()).map(Result::error).toList();
-```
-
-**Key points:**
-- Approach 1: simple, but loses the checked exception type info
-- Approach 2: no data loss, process partial results, log failures separately
-- In production: use Vavr's `Try` or `Either` for a battle-tested implementation
-
----
-
 ## Practice Task
 
 Create a custom exception hierarchy for a REST API with:
