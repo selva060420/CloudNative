@@ -58,6 +58,57 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 
 **Completed: 6/13**
 
+## Backlog — Missed Topics (to add after all 16 topics done)
+
+### 01-core-java
+
+| Topic | Priority | Notes |
+|-------|----------|-------|
+| Association, Aggregation, Composition | 🟡 Medium | HAS-A relationships, weak vs strong |
+| Cohesion & Coupling | 🟡 Medium | High/low cohesion, tight/loose coupling |
+| Shutdown Hook | 🟢 Low | `Runtime.getRuntime().addShutdownHook()` |
+| finalize() | 🟢 Low | Deprecated since Java 9; mention Cleaner replacement |
+
+### 02-collections
+
+| Topic | Priority | Notes |
+|-------|----------|-------|
+| Queue interface (ArrayDeque, LinkedList as Queue) | 🟡 Medium | Deque operations, when to use over Stack |
+
+### 03-java8-plus
+
+| Topic | Priority | Notes |
+|-------|----------|-------|
+| Date/Time API (LocalDate, ZonedDateTime, Duration) | 🔴 High | Frequently asked |
+| Collectors (groupingBy, partitioningBy, toMap, joining) | 🔴 High | Frequently asked |
+| `var` keyword (Java 10) | 🟡 Medium | Type inference, limitations |
+
+### 04-multithreading
+
+| Topic | Priority | Notes |
+|-------|----------|-------|
+| User Thread vs Daemon Thread | 🟡 Medium | JVM exits when only daemons remain |
+| Semaphore | 🔴 High | Fixed permits, acquire/release |
+| CountdownLatch | 🔴 High | await + countDown |
+| CyclicBarrier | 🔴 High | Reusable barrier point |
+| Exchanger | 🟢 Low | Two-thread object swap |
+| Blocking Queue | 🔴 High | put/take, producer-consumer |
+| Object Monitor | 🟡 Medium | monitorenter/monitorexit bytecode |
+| Context Switching | 🟡 Medium | Save/restore thread state |
+| Busy Spinning | 🟢 Low | CPU-wasting wait loop |
+
+### 05-exception-handling
+
+No gaps — complete.
+
+### New topic needed
+
+| Topic | Priority | Notes |
+|-------|----------|-------|
+| Logging / Log Levels | 🟡 Medium | Debug, Info, Warn, Error, Trace — no existing topic covers this |
+
+---
+
 ## How to Resume
 
 In a new session, say:
