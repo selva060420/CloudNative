@@ -47,7 +47,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 03 | Java 8+ Features | `03-java8-plus/README.md` | `java8plus/` | ✅ DONE |
 | 04 | Multithreading | `04-multithreading/README.md` | `multithreading/` | ✅ DONE |
 | 05 | Exception Handling | `05-exception-handling/README.md` | `exceptions/` | ✅ DONE |
-| 06 | Design Patterns | `06-design-patterns/README.md` | `core-java-examples/.../patterns/` | ❌ TODO |
+| 06 | Design Patterns | `06-design-patterns/README.md` | `patterns/` | ✅ DONE |
 | 07 | Spring Boot | `07-spring-boot/README.md` | `spring-boot-examples/.../springboot/` | ❌ TODO |
 | 08 | Microservices | `08-microservices/README.md` | `spring-boot-examples/.../microservices/` | ❌ TODO |
 | 09 | REST API | `09-rest-api/README.md` | `spring-boot-examples/.../restapi/` | ❌ TODO |
@@ -56,7 +56,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 12 | System Design | `12-system-design/README.md` | *(no code)* | ❌ TODO |
 | 13 | DSA | `13-dsa/README.md` | `core-java-examples/.../dsa/` | ❌ TODO |
 
-**Completed: 5/13**
+**Completed: 6/13**
 
 ## How to Resume
 
