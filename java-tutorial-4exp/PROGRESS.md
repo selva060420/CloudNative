@@ -96,6 +96,8 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | Object Monitor | 🟡 Medium | monitorenter/monitorexit bytecode |
 | Context Switching | 🟡 Medium | Save/restore thread state |
 | Busy Spinning | 🟢 Low | CPU-wasting wait loop |
+| Thread Scheduler / Time Slicing | 🟢 Low | Round-robin CPU allocation |
+| Thread Group | 🟢 Low | Rarely used, not recommended — but asked as trivia |
 
 ### 05-exception-handling
 
