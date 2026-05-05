@@ -15,8 +15,12 @@ Design patterns are **reusable solutions to common software design problems**. T
 | **Builder** | Creational | Step-by-step construction of complex objects |
 | **Strategy** | Behavioral | Swap algorithms at runtime |
 | **Observer** | Behavioral | Notify dependents when state changes |
+| **Template Method** | Behavioral | Fixed algorithm skeleton, subclass fills steps |
+| **Chain of Responsibility** | Behavioral | Pass request along a chain of handlers |
 | **Adapter** | Structural | Make incompatible interfaces work together |
 | **Proxy** | Structural | Control access to an object |
+| **Decorator** | Structural | Add behavior dynamically, same interface |
+| **Dependency Injection** | Creational/Structural | Invert control — supply dependencies externally |
 
 ### Design Principles (asked alongside patterns)
 
@@ -251,6 +255,142 @@ Observers react independently (loose coupling)
 | Observer not receiving events | Forgot to register, or registered on wrong instance | Log on register/unregister; verify subject reference |
 | Proxy method not intercepted | Calling method from within same class (self-invocation) | Extract to separate bean or use `AopContext` |
 | Builder produces invalid object | No validation in `build()` | Add validation in `build()` — throw if required fields missing |
+
+---
+
+## Additional Patterns (Frequently Asked)
+
+### Dependency Injection (DI)
+
+**What:** Instead of a class creating its own dependencies, they are provided (injected) from outside.
+
+```java
+// ❌ Tight coupling — hard to test
+public class OrderService {
+    private final PaymentGateway gateway = new StripeGateway(); // locked to Stripe
+}
+
+// ✅ DI — loose coupling
+public class OrderService {
+    private final PaymentGateway gateway;
+
+    public OrderService(PaymentGateway gateway) { // injected
+        this.gateway = gateway;
+    }
+}
+```
+
+**3 types of injection in Spring:**
+
+| Type | Annotation | Recommended? |
+|------|-----------|-------------|
+| Constructor | `@Autowired` (optional on single constructor) | ✅ Yes — immutable, testable |
+| Setter | `@Autowired` on setter | 🟡 For optional deps |
+| Field | `@Autowired` on field | ❌ No — untestable, hides deps |
+
+**Why constructor injection wins:**
+- Fields can be `final` → immutable
+- Easy to unit test (just pass mocks in constructor)
+- Fails fast if dependency missing (compile-time vs runtime)
+- No reflection needed
+
+---
+
+### Template Method
+
+**What:** Define algorithm skeleton in base class; subclasses override specific steps.
+
+```java
+// Spring's JdbcTemplate uses this internally
+public abstract class DataProcessor {
+    // Template method — fixed algorithm
+    public final void process() {
+        fetchData();
+        validate();
+        transform();
+        save();
+    }
+
+    abstract void fetchData();
+    abstract void transform();
+
+    void validate() { /* default validation */ }
+    void save() { /* default save */ }
+}
+
+public class CsvProcessor extends DataProcessor {
+    void fetchData() { System.out.println("Reading CSV file"); }
+    void transform() { System.out.println("Parsing CSV rows"); }
+}
+```
+
+**Spring examples:** `JdbcTemplate`, `RestTemplate`, `AbstractRoutingDataSource`, `OncePerRequestFilter`
+
+---
+
+### Decorator
+
+**What:** Wrap an object to add behavior without changing its interface.
+
+```java
+// Classic Java I/O — each layer adds behavior
+InputStream raw = new FileInputStream("data.txt");
+InputStream buffered = new BufferedInputStream(raw);      // adds buffering
+InputStream gzipped = new GZIPInputStream(buffered);      // adds decompression
+
+// In microservices — decorating a service
+public interface NotificationSender {
+    void send(Notification n);
+}
+
+public class LoggingDecorator implements NotificationSender {
+    private final NotificationSender delegate;
+
+    public LoggingDecorator(NotificationSender delegate) { this.delegate = delegate; }
+
+    public void send(Notification n) {
+        log.info("Sending notification to {}", n.recipient());
+        delegate.send(n);  // delegate to real implementation
+        log.info("Notification sent successfully");
+    }
+}
+```
+
+**Decorator vs Proxy:** Decorator adds behavior (logging, caching). Proxy controls access (auth, lazy-load).
+
+---
+
+### Chain of Responsibility
+
+**What:** Pass a request along a chain of handlers; each decides to process or pass it on.
+
+```java
+// Spring Security filter chain is exactly this pattern
+public abstract class Handler {
+    private Handler next;
+
+    public Handler setNext(Handler next) { this.next = next; return next; }
+
+    public void handle(Request request) {
+        if (canHandle(request)) {
+            process(request);
+        } else if (next != null) {
+            next.handle(request);
+        }
+    }
+
+    abstract boolean canHandle(Request request);
+    abstract void process(Request request);
+}
+
+// Usage: AuthHandler → RateLimitHandler → ValidationHandler → BusinessHandler
+```
+
+**Real-world examples:**
+- Servlet filters (`FilterChain.doFilter()`)
+- Spring Security filter chain (15+ filters in sequence)
+- Spring Interceptors (`HandlerInterceptor`)
+- Exception handler resolution (`@ControllerAdvice` chain)
 
 ---
 
