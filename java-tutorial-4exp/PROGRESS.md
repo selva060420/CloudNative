@@ -48,7 +48,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 04 | Multithreading | `04-multithreading/README.md` | `multithreading/` | ✅ DONE |
 | 05 | Exception Handling | `05-exception-handling/README.md` | `exceptions/` | ✅ DONE |
 | 06 | Design Patterns | `06-design-patterns/README.md` | `patterns/` | ✅ DONE |
-| 07 | Spring Boot | `07-spring-boot/README.md` | `spring-boot-examples/.../springboot/` | ❌ TODO | 🔴 High |
+| 07 | Spring Boot | `07-spring-boot/README.md` | `springboot/` | ✅ DONE |
 | 08 | Microservices | `08-microservices/README.md` | `spring-boot-examples/.../microservices/` | ❌ TODO | 🔴 High |
 | 09 | REST API | `09-rest-api/README.md` | `spring-boot-examples/.../restapi/` | ❌ TODO | 🔴 High |
 | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium |

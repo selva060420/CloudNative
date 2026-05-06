@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>spring-boot-examples</artifactId>
-    <name>Spring Boot Examples (Topics 07-09)</name>
+    <name>Spring Boot Examples (Topics 07-09, 14-15)</name>
 
     <properties>
         <spring-boot.version>3.2.5</spring-boot.version>
@@ -33,6 +33,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 
