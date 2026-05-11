@@ -3,58 +3,49 @@ package com.interview.springboot;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.springframework.stereotype.Service;
 
 /**
- * Demonstrates Spring AOP with a custom @Timed annotation.
- * Any method annotated with @Timed will have its execution time logged.
+ * Simple AOP demo — logs BEFORE and AFTER every method in GreetingService.
+ * Runs automatically at startup so you can see it in the console.
  *
- * How it works:
- * 1. Spring creates a CGLIB proxy around beans with @Timed methods
- * 2. The proxy intercepts the call and delegates to the aspect
- * 3. Aspect measures time around the actual method execution
+ * Flow: caller → PROXY → Aspect (before) → actual method → Aspect (after) → return
  */
+@Configuration
 public class AopTimingDemo {
 
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Timed {
-        String value() default "";
+    @Service
+    public static class GreetingService {
+        public String greet(String name) {
+            System.out.println("  [Service] Hello, " + name + "!");
+            return "Hello, " + name;
+        }
     }
 
     @Aspect
     @Component
-    public static class TimingAspect {
+    public static class LoggingAspect {
 
-        @Around("@annotation(timed)")
-        public Object measureExecutionTime(ProceedingJoinPoint joinPoint, Timed timed) throws Throwable {
-            long start = System.nanoTime();
-            try {
-                return joinPoint.proceed();
-            } finally {
-                long durationMs = (System.nanoTime() - start) / 1_000_000;
-                String label = timed.value().isEmpty() ? joinPoint.getSignature().toShortString() : timed.value();
-                System.out.printf("[AOP] %s executed in %dms%n", label, durationMs);
-            }
+        @Around("execution(* com.interview.springboot.AopTimingDemo.GreetingService.*(..))")
+        public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+            String method = joinPoint.getSignature().toShortString();
+            System.out.println("  [AOP] BEFORE → " + method);
+            Object result = joinPoint.proceed();
+            System.out.println("  [AOP] AFTER  → " + method + " returned: " + result);
+            return result;
         }
     }
 
-    /**
-     * Example service using @Timed annotation.
-     */
-    @Component
-    public static class OrderService {
-
-        @Timed("processOrder")
-        public String processOrder(String orderId) {
-            // Simulate work
-            try { Thread.sleep(50); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-            return "Order " + orderId + " processed";
-        }
+    @Bean
+    CommandLineRunner runAopDemo(GreetingService greetingService) {
+        return args -> {
+            System.out.println("\n--- AOP Demo ---");
+            greetingService.greet("Selva");
+            System.out.println("--- AOP Demo End ---\n");
+        };
     }
 }
