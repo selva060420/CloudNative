@@ -386,14 +386,14 @@ public class LoggingAspect {
 
 1. A custom `@ConfigurationProperties` class for rate-limiting config
 2. A `@ConditionalOnProperty` bean that only activates when `app.ratelimit.enabled=true`
-3. An AOP aspect that logs execution time of any method annotated with `@Timed`
+3. An AOP aspect that logs BEFORE/AFTER any method call in a service
 4. A custom Actuator endpoint `/actuator/ratelimit` that shows current config
 5. Profile-specific behavior: `dev` profile disables rate limiting, `prod` enables it
 
 **Acceptance criteria:**
 - Run with `--spring.profiles.active=prod` → rate limiter active, `/actuator/ratelimit` shows config
 - Run with `--spring.profiles.active=dev` → rate limiter bean not created
-- `@Timed` annotation logs method execution time via AOP
+- AOP aspect logs BEFORE/AFTER method calls at startup via `CommandLineRunner`
 
 ---
 
@@ -403,5 +403,5 @@ See `spring-boot-examples/src/main/java/com/interview/springboot/`:
 - `SpringBootDemoApp.java` — main application class
 - `BeanLifecycleDemo.java` — demonstrates full bean lifecycle callbacks
 - `AutoConfigConditionalDemo.java` — shows @Conditional* in action
-- `AopTimingDemo.java` — AOP aspect for method timing
+- `AopTimingDemo.java` — AOP aspect with BEFORE/AFTER logging, auto-runs at startup
 - `CustomActuatorEndpoint.java` — custom /actuator endpoint
