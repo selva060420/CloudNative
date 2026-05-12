@@ -1,4 +1,4 @@
-package com.interview.corejava.microservices;
+package com.interview.microservices;
 
 import java.util.*;
 
