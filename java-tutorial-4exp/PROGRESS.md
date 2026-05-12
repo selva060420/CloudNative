@@ -50,7 +50,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 06 | Design Patterns | `06-design-patterns/README.md` | `patterns/` | ✅ DONE |
 | 07 | Spring Boot | `07-spring-boot/README.md` | `springboot/` | ✅ DONE |
 | 08 | Microservices | `08-microservices/README.md` | `microservices/` | ✅ DONE |
-| 09 | REST API | `09-rest-api/README.md` | `spring-boot-examples/.../restapi/` | ❌ TODO | 🔴 High |
+| 09 | REST API | `09-rest-api/README.md` | `restapi/` | ✅ DONE |
 | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium |
 | 11 | Testing | `11-testing/README.md` | `core-java-examples/.../testing/` | ❌ TODO | 🟢 Low |
 | 12 | System Design | `12-system-design/README.md` | *(no code)* | ❌ TODO | 🔴 High |
