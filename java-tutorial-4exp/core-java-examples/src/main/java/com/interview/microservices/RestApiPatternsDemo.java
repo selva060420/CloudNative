@@ -9,6 +9,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * Demonstrates REST API concepts WITHOUT any framework (pure Java).
  * Shows the same patterns as ProductController but framework-agnostic.
  *
+ * In real projects, this would use JAX-RS (Jersey) annotations:
+ *   @Path("/products"), @GET, @POST, @PUT, @DELETE
+ *   @Produces(MediaType.APPLICATION_JSON)
+ *
+ * CCES uses Jersey (JAX-RS) — not Spring Boot — for its REST APIs.
+ *
  * Run: java RestApiPatternsDemo
  */
 public class RestApiPatternsDemo {
