@@ -3,6 +3,7 @@ package com.interview.springboot.restapi;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +35,12 @@ public class ProductController {
     private final Map<Long, Product> store = new ConcurrentHashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
 
-    // --- GET all with pagination ---
+    // --- GET all with pagination + rate limit headers ---
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestHeader(value = "X-Request-ID", required = false) String requestId) {
 
         List<Product> all = new ArrayList<>(store.values());
         int start = page * size;
@@ -52,7 +54,15 @@ public class ProductController {
         response.put("totalElements", all.size());
         response.put("totalPages", (int) Math.ceil((double) all.size() / size));
 
-        return ResponseEntity.ok(response);
+        HttpHeaders headers = new HttpHeaders();
+        // Rate limiting headers
+        headers.set("X-RateLimit-Limit", "100");
+        headers.set("X-RateLimit-Remaining", "97");
+        headers.set("X-RateLimit-Reset", String.valueOf(System.currentTimeMillis() / 1000 + 60));
+        // Correlation ID — propagate or generate
+        headers.set("X-Request-ID", requestId != null ? requestId : UUID.randomUUID().toString());
+
+        return ResponseEntity.ok().headers(headers).body(response);
     }
 
     // --- GET by ID ---
@@ -72,12 +82,28 @@ public class ProductController {
         return ResponseEntity.ok(response); // 200
     }
 
-    // --- POST (create) ---
+    // --- POST (create) with Idempotency-Key header ---
+    private final Map<String, Product> idempotencyCache = new ConcurrentHashMap<>();
+
     @PostMapping
-    public ResponseEntity<Product> create(@Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<Product> create(
+            @Valid @RequestBody ProductRequest request,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+
+        // If client sent Idempotency-Key, check cache to prevent duplicate creation
+        if (idempotencyKey != null && idempotencyCache.containsKey(idempotencyKey)) {
+            Product cached = idempotencyCache.get(idempotencyKey);
+            return ResponseEntity.ok(cached); // Return cached result, don't create again
+        }
+
         long id = idGenerator.getAndIncrement();
         Product product = new Product(id, request.name(), request.price());
         store.put(id, product);
+
+        if (idempotencyKey != null) {
+            idempotencyCache.put(idempotencyKey, product);
+        }
+
         URI location = URI.create("/api/v1/products/" + id);
         return ResponseEntity.created(location).body(product); // 201 + Location header
     }
