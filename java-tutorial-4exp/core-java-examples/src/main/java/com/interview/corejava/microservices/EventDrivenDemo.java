@@ -1,4 +1,4 @@
-package com.interview.springboot.microservices;
+package com.interview.corejava.microservices;
 
 import java.util.*;
 import java.util.concurrent.*;

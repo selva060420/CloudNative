@@ -1,4 +1,4 @@
-package com.interview.springboot.microservices;
+package com.interview.corejava.microservices;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
