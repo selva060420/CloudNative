@@ -11,46 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Demonstrates test patterns: AAA (Arrange-Act-Assert), test doubles, and AssertJ style.
+ * Demonstrates test patterns: AAA (Arrange-Act-Assert), test doubles, guard clauses.
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test Patterns & Best Practices")
 class TestPatternsTest {
-
-    // --- Domain ---
-
-    interface PaymentGateway {
-        PaymentResult charge(String cardToken, double amount);
-    }
-
-    interface OrderRepository {
-        void save(Order order);
-    }
-
-    record PaymentResult(boolean success, String transactionId) {}
-    record Order(String id, double amount, String status) {}
-
-    static class OrderService {
-        private final PaymentGateway paymentGateway;
-        private final OrderRepository orderRepo;
-
-        OrderService(PaymentGateway paymentGateway, OrderRepository orderRepo) {
-            this.paymentGateway = paymentGateway;
-            this.orderRepo = orderRepo;
-        }
-
-        Order placeOrder(String orderId, String cardToken, double amount) {
-            if (amount <= 0) throw new IllegalArgumentException("Amount must be positive");
-
-            PaymentResult result = paymentGateway.charge(cardToken, amount);
-            String status = result.success() ? "CONFIRMED" : "PAYMENT_FAILED";
-            Order order = new Order(orderId, amount, status);
-            orderRepo.save(order);
-            return order;
-        }
-    }
-
-    // --- Tests using AAA pattern ---
 
     @Mock PaymentGateway paymentGateway;
     @Mock OrderRepository orderRepo;
@@ -60,13 +25,11 @@ class TestPatternsTest {
     @DisplayName("AAA: successful order placement")
     void shouldPlaceOrderSuccessfully() {
         // Arrange
-        String cardToken = "tok_visa_4242";
-        double amount = 99.99;
-        when(paymentGateway.charge(cardToken, amount))
+        when(paymentGateway.charge("tok_visa_4242", 99.99))
                 .thenReturn(new PaymentResult(true, "txn_123"));
 
         // Act
-        Order order = orderService.placeOrder("order-1", cardToken, amount);
+        Order order = orderService.placeOrder("order-1", "tok_visa_4242", 99.99);
 
         // Assert
         assertEquals("CONFIRMED", order.status());
@@ -77,14 +40,11 @@ class TestPatternsTest {
     @Test
     @DisplayName("AAA: failed payment marks order as failed")
     void shouldMarkOrderAsFailedWhenPaymentDeclined() {
-        // Arrange
         when(paymentGateway.charge(anyString(), anyDouble()))
                 .thenReturn(new PaymentResult(false, null));
 
-        // Act
         Order order = orderService.placeOrder("order-2", "tok_declined", 50.0);
 
-        // Assert
         assertEquals("PAYMENT_FAILED", order.status());
         verify(orderRepo).save(argThat(o -> o.status().equals("PAYMENT_FAILED")));
     }
@@ -95,7 +55,6 @@ class TestPatternsTest {
         assertThrows(IllegalArgumentException.class,
                 () -> orderService.placeOrder("order-3", "tok_visa", 0));
 
-        // Payment should never be attempted
         verifyNoInteractions(paymentGateway);
         verifyNoInteractions(orderRepo);
     }
@@ -109,7 +68,6 @@ class TestPatternsTest {
         assertThrows(RuntimeException.class,
                 () -> orderService.placeOrder("order-4", "tok_visa", 100.0));
 
-        // Order should NOT be saved if payment throws
         verifyNoInteractions(orderRepo);
     }
 }
