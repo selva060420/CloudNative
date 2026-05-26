@@ -51,7 +51,7 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 07 | Spring Boot | `07-spring-boot/README.md` | `springboot/` | ✅ DONE |
 | 08 | Microservices | `08-microservices/README.md` | `microservices/` | ✅ DONE |
 | 09 | REST API | `09-rest-api/README.md` | `restapi/` | ✅ DONE |
-| 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE |
+| 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE |
 | 11 | Testing | `11-testing/README.md` | `testing/` | ✅ DONE |
 | 12 | System Design | `12-system-design/README.md` | `NONE/` | ✅ DONE |
 | 13 | DSA | `13-dsa/README.md` | `core-java-examples/.../dsa/` | ❌ TODO | 🔴 High |
@@ -62,56 +62,34 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 
 **Completed: 14/17**
 
-## Backlog — Missed Topics (to add after all 16 topics done)
+## Backlog — Missed Topics ✅ DONE (2026-05-26)
 
-### 01-core-java
+All missed topics have been added to their respective READMEs:
 
-| Topic | Priority | Notes |
-|-------|----------|-------|
-| Association, Aggregation, Composition | 🟡 Medium | HAS-A relationships, weak vs strong |
-| Cohesion & Coupling | 🟡 Medium | High/low cohesion, tight/loose coupling |
-| Shutdown Hook | 🟢 Low | `Runtime.getRuntime().addShutdownHook()` |
-| finalize() | 🟢 Low | Deprecated since Java 9; mention Cleaner replacement |
+### 01-core-java — Added:
+- ✅ SOLID Principles (with code examples, 30-sec answer)
+- ✅ Association, Aggregation, Composition (table + code)
+- ✅ Cohesion & Coupling (good/bad examples, microservices context)
+- ✅ Shutdown Hook (K8s graceful shutdown pattern)
+- ✅ finalize() (why deprecated, modern alternatives: Cleaner, try-with-resources)
 
-### 02-collections
+### 02-collections — Already covered:
+- ✅ Fail-Fast vs Fail-Safe Iterators (was already in README)
 
-| Topic | Priority | Notes |
-|-------|----------|-------|
-| Queue interface (ArrayDeque, LinkedList as Queue) | 🟡 Medium | Deque operations, when to use over Stack |
+### 04-multithreading — Added:
+- ✅ User vs Daemon Thread (table + pitfalls)
+- ✅ Semaphore (rate limiting pattern, comparison with synchronized)
+- ✅ CountDownLatch (microservice startup pattern)
+- ✅ CyclicBarrier (parallel phase processing, comparison table with CountDownLatch)
+- ✅ Exchanger (double-buffering pattern)
+- ✅ BlockingQueue deep dive (all implementations, Kafka consumer pattern)
+- ✅ Object Monitor (wait/notify rules, spurious wakeups)
+- ✅ Context Switching (cost, measurement commands, impact)
+- ✅ Busy Spinning (Thread.onSpinWait, when to use, comparison table)
+- ✅ Thread Dump quick reference (commands, how to read)
 
-### 03-java8-plus
-
-| Topic | Priority | Notes |
-|-------|----------|-------|
-| Date/Time API (LocalDate, ZonedDateTime, Duration) | 🔴 High | Frequently asked |
-| Collectors (groupingBy, partitioningBy, toMap, joining) | 🔴 High | Frequently asked |
-| `var` keyword (Java 10) | 🟡 Medium | Type inference, limitations |
-
-### 04-multithreading
-
-| Topic | Priority | Notes |
-|-------|----------|-------|
-| User Thread vs Daemon Thread | 🟡 Medium | JVM exits when only daemons remain |
-| Semaphore | 🔴 High | Fixed permits, acquire/release |
-| CountdownLatch | 🔴 High | await + countDown |
-| CyclicBarrier | 🔴 High | Reusable barrier point |
-| Exchanger | 🟢 Low | Two-thread object swap |
-| Blocking Queue | 🔴 High | put/take, producer-consumer |
-| Object Monitor | 🟡 Medium | monitorenter/monitorexit bytecode |
-| Context Switching | 🟡 Medium | Save/restore thread state |
-| Busy Spinning | 🟢 Low | CPU-wasting wait loop |
-| Thread Scheduler / Time Slicing | 🟢 Low | Round-robin CPU allocation |
-| Thread Group | 🟢 Low | Rarely used, not recommended — but asked as trivia |
-
-### 05-exception-handling
-
-No gaps — complete.
-
-### New topic needed
-
-| Topic | Priority | Notes |
-|-------|----------|-------|
-| Logging / Log Levels | 🟡 Medium | Debug, Info, Warn, Error, Trace — no existing topic covers this |
+### 07-spring-boot — Added:
+- ✅ Logging & Log Levels (SLF4J/Logback, MDC, best practices, 30-sec answer)
 
 ---
 

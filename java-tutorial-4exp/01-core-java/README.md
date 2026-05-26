@@ -740,3 +740,181 @@ All code is in `core-java-examples/src/main/java/com/interview/corejava/`:
 | [SerializationDemo.java](../core-java-examples/src/main/java/com/interview/corejava/serialization/SerializationDemo.java) | `serialization` | Serializable, serialVersionUID, transient |
 | [GenericsDemo.java](../core-java-examples/src/main/java/com/interview/corejava/generics/GenericsDemo.java) | `generics` | Type erasure, bounded types, wildcards |
 | [AnnotationsDemo.java](../core-java-examples/src/main/java/com/interview/corejava/annotations/AnnotationsDemo.java) | `annotations` | Custom annotations, reflection processing |
+
+---
+
+## SOLID Principles
+
+| Principle | Meaning | Violation Example | Fix |
+|-----------|---------|-------------------|-----|
+| **S** — Single Responsibility | A class should have only one reason to change | `UserService` handles auth + email + DB | Split into `AuthService`, `EmailService`, `UserRepository` |
+| **O** — Open/Closed | Open for extension, closed for modification | Adding new payment type requires editing `PaymentProcessor` | Use strategy pattern — new class per payment type |
+| **L** — Liskov Substitution | Subtypes must be substitutable for their base types | `Square extends Rectangle` breaks `setWidth()`/`setHeight()` | Use composition or separate interfaces |
+| **I** — Interface Segregation | Clients shouldn't depend on methods they don't use | `Animal` interface with `fly()` forces `Dog` to implement it | Split into `Flyable`, `Swimmable` |
+| **D** — Dependency Inversion | Depend on abstractions, not concretions | `OrderService` directly instantiates `MySQLRepository` | Inject `OrderRepository` interface |
+
+```java
+// D — Dependency Inversion in Spring Boot
+@Service
+public class OrderService {
+    private final OrderRepository repo; // depends on abstraction
+
+    public OrderService(OrderRepository repo) { // injected by Spring
+        this.repo = repo;
+    }
+}
+
+// Can swap MySQL → Cassandra without touching OrderService
+@Repository
+public class CassandraOrderRepository implements OrderRepository { ... }
+```
+
+**30-sec answer:** "SOLID keeps code maintainable at scale. Single Responsibility means one class, one reason to change. Open/Closed means I add features by adding new classes, not editing existing ones — strategy pattern is a classic example. Dependency Inversion means my service depends on an interface, so I can swap implementations without touching business logic. In Spring Boot, constructor injection naturally enforces DIP."
+
+---
+
+## Association, Aggregation & Composition
+
+| Relationship | Strength | Lifecycle | Example |
+|-------------|----------|-----------|---------|
+| **Association** | Weak | Independent | `Teacher` ↔ `Student` (many-to-many) |
+| **Aggregation** | Medium | Independent (HAS-A, can exist alone) | `Department` → `Employee` (employee survives dept deletion) |
+| **Composition** | Strong | Dependent (PART-OF, dies with parent) | `House` → `Room` (room doesn't exist without house) |
+
+```java
+// Composition — Room cannot exist without House
+public class House {
+    private final List<Room> rooms; // created and destroyed with House
+
+    public House(int numRooms) {
+        rooms = IntStream.range(0, numRooms)
+            .mapToObj(i -> new Room()) // House creates rooms
+            .toList();
+    }
+    // When House is GC'd, Rooms are GC'd too
+}
+
+// Aggregation — Engine can exist independently
+public class Car {
+    private Engine engine; // injected, not created by Car
+
+    public Car(Engine engine) { this.engine = engine; }
+    public void setEngine(Engine e) { this.engine = e; } // can swap
+}
+```
+
+**Interview tip:** Composition = "creates and owns." Aggregation = "uses but doesn't own." In microservices, services have association (call each other) but not composition (one service dying shouldn't kill another).
+
+---
+
+## Cohesion & Coupling
+
+| Concept | Good | Bad | Metric |
+|---------|------|-----|--------|
+| **Cohesion** | High (class does one thing well) | Low (class does unrelated things) | Methods use most of the class's fields |
+| **Coupling** | Low (classes are independent) | High (classes depend on each other's internals) | Changes in one class force changes in another |
+
+```java
+// LOW cohesion (bad) — does too many unrelated things
+public class UserManager {
+    public void createUser() { ... }
+    public void sendEmail() { ... }      // not user management
+    public void generateReport() { ... } // not user management
+    public void backupDatabase() { ... } // definitely not user management
+}
+
+// HIGH cohesion (good) — focused responsibility
+public class UserRepository {
+    public User findById(String id) { ... }
+    public User save(User user) { ... }
+    public void delete(String id) { ... }
+}
+```
+
+**Coupling in microservices:**
+- **Tight coupling:** Service A calls Service B synchronously and breaks if B changes its API → use API versioning, contracts
+- **Loose coupling:** Service A publishes event to Kafka, Service B consumes when ready → event-driven architecture
+
+---
+
+## Shutdown Hook
+
+A shutdown hook is a thread registered via `Runtime.addShutdownHook()` that runs when the JVM is shutting down (SIGTERM, System.exit(), Ctrl+C).
+
+```java
+public class GracefulShutdown {
+    public static void main(String[] args) {
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutdown hook triggered — cleaning up...");
+            pool.shutdown();
+            try {
+                if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
+                    pool.shutdownNow(); // force kill after 30s
+                }
+            } catch (InterruptedException e) {
+                pool.shutdownNow();
+            }
+            System.out.println("Cleanup complete.");
+        }));
+
+        // Application runs...
+    }
+}
+```
+
+**When it runs:** `kill <pid>` (SIGTERM), `System.exit()`, last non-daemon thread exits.
+**When it does NOT run:** `kill -9` (SIGKILL), JVM crash, power failure.
+
+**Kubernetes relevance:** K8s sends SIGTERM → `preStop` hook + shutdown hook runs → 30s grace period → SIGKILL. Use shutdown hooks to drain connections, flush buffers, deregister from service discovery.
+
+---
+
+## finalize() — Deprecated (Java 9+)
+
+```java
+// DON'T USE — unpredictable, slow, deprecated
+@Override
+protected void finalize() throws Throwable {
+    // Called by GC before reclaiming object — maybe. Eventually. Or never.
+    closeConnection();
+}
+```
+
+**Why it's bad:**
+1. **No guarantee it runs** — GC may never collect the object
+2. **Performance penalty** — Objects with finalizers go to a separate queue, survive an extra GC cycle
+3. **Resurrection risk** — Object can make itself reachable again inside finalize()
+4. **Thread-unsafe** — Finalizer runs on a random GC thread
+
+**Modern alternatives:**
+| Instead of finalize() | Use |
+|----------------------|-----|
+| Close resources | `try-with-resources` + `AutoCloseable` |
+| Custom cleanup | `Cleaner` (Java 9+) — safer, registered action |
+| Release native memory | `Cleaner` or explicit `close()` method |
+
+```java
+// Modern approach — try-with-resources
+try (var conn = dataSource.getConnection();
+     var stmt = conn.prepareStatement(sql)) {
+    // auto-closed even on exception
+}
+
+// Java 9+ Cleaner for native resources
+public class NativeResource implements AutoCloseable {
+    private static final Cleaner cleaner = Cleaner.create();
+    private final Cleaner.Cleanable cleanable;
+
+    public NativeResource() {
+        long ptr = allocateNative();
+        cleanable = cleaner.register(this, () -> freeNative(ptr));
+    }
+
+    @Override
+    public void close() { cleanable.clean(); }
+}
+```
+
+**Interview answer:** "finalize() is deprecated since Java 9 because it's unreliable — no guarantee when or if it runs, it adds GC overhead, and it's not thread-safe. I use try-with-resources for all closeable resources, and Cleaner API for native memory cleanup as a safety net."

@@ -405,3 +405,106 @@ See `spring-boot-examples/src/main/java/com/interview/springboot/`:
 - `AutoConfigConditionalDemo.java` — shows @Conditional* in action
 - `AopTimingDemo.java` — AOP aspect with BEFORE/AFTER logging, auto-runs at startup
 - `CustomActuatorEndpoint.java` — custom /actuator endpoint
+
+
+---
+
+## Logging & Log Levels
+
+### Logging Stack in Spring Boot
+
+```
+Your Code → SLF4J (API/Facade) → Logback (Default Implementation) → Console/File/ELK
+```
+
+Spring Boot uses **SLF4J** as the facade and **Logback** as the default implementation. No configuration needed — it works out of the box.
+
+### Log Levels (Severity Order)
+
+| Level | When to Use | Example |
+|-------|-------------|---------|
+| `TRACE` | Very detailed debugging (method entry/exit) | `log.trace("Entering method with param={}", p)` |
+| `DEBUG` | Development debugging, not for production | `log.debug("Cache hit for key={}", key)` |
+| `INFO` | Normal operations, milestones | `log.info("Service started on port {}", port)` |
+| `WARN` | Potential problem, system can recover | `log.warn("Retry attempt {} for service {}", count, svc)` |
+| `ERROR` | Failure requiring attention | `log.error("Payment failed for order={}", id, exception)` |
+| `FATAL` | System unusable (rarely used in SLF4J) | Application crash |
+
+**Rule:** Production runs at `INFO`. Setting `DEBUG` in prod generates massive logs and impacts performance.
+
+### Spring Boot Configuration
+
+```properties
+# application.properties
+logging.level.root=INFO
+logging.level.com.ericsson.nef=DEBUG
+logging.level.org.springframework.web=WARN
+logging.level.org.hibernate.SQL=DEBUG
+
+# Log to file
+logging.file.name=app.log
+logging.file.max-size=10MB
+logging.file.max-history=30
+
+# Pattern
+logging.pattern.console=%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+```
+
+### Best Practices
+
+```java
+// Use SLF4J with Lombok
+@Slf4j
+@Service
+public class OrderService {
+
+    public Order createOrder(OrderRequest req) {
+        log.info("Creating order for user={}", req.getUserId()); // parameterized (no string concat)
+
+        try {
+            Order order = processOrder(req);
+            log.info("Order created: id={}, total={}", order.getId(), order.getTotal());
+            return order;
+        } catch (PaymentException e) {
+            log.error("Payment failed for user={}, amount={}", req.getUserId(), req.getAmount(), e);
+            // Pass exception as LAST arg — Logback prints stack trace
+            throw e;
+        }
+    }
+}
+```
+
+**Key rules:**
+1. **Use parameterized messages** — `log.info("x={}", x)` not `log.info("x=" + x)` (avoids string concat when level is disabled)
+2. **Pass exception as last argument** — stack trace is printed automatically
+3. **Never log sensitive data** — no passwords, tokens, PII
+4. **Use MDC for correlation** — `MDC.put("correlationId", id)` appears in every log line for that request
+5. **Don't log and throw** — either log OR throw, not both (causes duplicate log entries)
+
+### MDC (Mapped Diagnostic Context) for Microservices
+
+```java
+// Filter that sets correlation ID for every request
+@Component
+public class CorrelationFilter extends OncePerRequestFilter {
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) {
+        String correlationId = Optional.ofNullable(req.getHeader("X-Correlation-ID"))
+            .orElse(UUID.randomUUID().toString());
+        MDC.put("correlationId", correlationId);
+        try {
+            chain.doFilter(req, res);
+        } finally {
+            MDC.clear(); // MUST clear — thread pool reuses threads
+        }
+    }
+}
+
+// logback-spring.xml pattern includes MDC
+// %d [%X{correlationId}] %-5level %logger - %msg%n
+// Output: 2024-01-15 10:30:45 [abc-123-def] INFO  OrderService - Order created: id=456
+```
+
+### Log Levels — Interview Answer (30 sec)
+
+> "SLF4J defines TRACE, DEBUG, INFO, WARN, ERROR in increasing severity. In production we run at INFO — it captures normal operations and problems without the noise of DEBUG. I use parameterized logging to avoid string concatenation overhead, MDC for request correlation across microservices, and structured logging (JSON) for ELK/Splunk ingestion. The key rule: log at the right level — ERROR means someone needs to act, WARN means something might become a problem, INFO is business events."

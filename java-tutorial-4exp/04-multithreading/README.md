@@ -501,3 +501,293 @@ core-java-examples/src/main/java/com/interview/multithreading/
 ├── DeadlockDemo.java             — Deadlock creation and detection
 ├── BoundedBufferDemo.java        — Producer-consumer: 3 approaches + benchmark
 ```
+
+
+---
+
+## Additional Concurrency Utilities
+
+### User Thread vs Daemon Thread
+
+| Feature | User Thread | Daemon Thread |
+|---------|-------------|---------------|
+| JVM exit | JVM waits for all user threads to finish | JVM exits even if daemon threads are running |
+| Default | All threads are user threads by default | Must call `setDaemon(true)` before `start()` |
+| Use case | Business logic, request handling | GC, background cleanup, heartbeat |
+| Example | Main thread, Tomcat worker threads | `Thread.setDaemon(true)`, JVM GC threads |
+
+```java
+Thread daemon = new Thread(() -> {
+    while (true) {
+        cleanExpiredCache(); // runs until JVM exits
+        Thread.sleep(60_000);
+    }
+});
+daemon.setDaemon(true); // MUST set before start()
+daemon.start();
+// When all user threads finish, JVM kills this daemon abruptly
+```
+
+**Pitfall:** Daemon threads don't run shutdown hooks and don't flush buffers. Never use for critical I/O (writing to DB/file).
+
+---
+
+### Semaphore
+
+Controls access to a shared resource by maintaining a set of permits.
+
+```java
+// Rate-limit concurrent DB connections to 5
+Semaphore dbPool = new Semaphore(5);
+
+public Result queryDatabase(String sql) throws InterruptedException {
+    dbPool.acquire(); // blocks if 5 threads already acquired
+    try {
+        return executeQuery(sql);
+    } finally {
+        dbPool.release(); // return permit
+    }
+}
+
+// Non-blocking variant
+if (dbPool.tryAcquire(2, TimeUnit.SECONDS)) {
+    try { /* use resource */ }
+    finally { dbPool.release(); }
+} else {
+    return fallbackResponse(); // graceful degradation
+}
+```
+
+| Feature | synchronized | Semaphore |
+|---------|-------------|-----------|
+| Permits | 1 (binary) | N (configurable) |
+| Owner | Thread that locked | Any thread can release |
+| Use case | Mutual exclusion | Resource pooling, rate limiting |
+
+---
+
+### CountDownLatch
+
+One-time barrier — threads wait until count reaches zero. Cannot be reset.
+
+```java
+// Microservice startup: wait for all dependencies to be ready
+CountDownLatch ready = new CountDownLatch(3);
+
+// Each dependency signals when ready
+CompletableFuture.runAsync(() -> { connectToKafka(); ready.countDown(); });
+CompletableFuture.runAsync(() -> { connectToCassandra(); ready.countDown(); });
+CompletableFuture.runAsync(() -> { warmCache(); ready.countDown(); });
+
+ready.await(30, TimeUnit.SECONDS); // blocks until all 3 done or timeout
+startAcceptingTraffic();
+```
+
+**Use cases:** Wait for N services to initialize, coordinate test threads to start simultaneously, batch processing completion.
+
+---
+
+### CyclicBarrier
+
+Reusable barrier — N threads wait for each other, then all proceed together. Can be reset.
+
+```java
+// Parallel data processing: all workers must finish phase 1 before phase 2
+CyclicBarrier barrier = new CyclicBarrier(4, () -> {
+    System.out.println("All 4 workers finished phase — merging results");
+});
+
+for (int i = 0; i < 4; i++) {
+    executor.submit(() -> {
+        processPhase1();
+        barrier.await(); // wait for all 4
+        processPhase2();
+        barrier.await(); // reusable! wait again for phase 2
+    });
+}
+```
+
+| Feature | CountDownLatch | CyclicBarrier |
+|---------|---------------|---------------|
+| Reusable | No (one-shot) | Yes (reset after each trip) |
+| Who waits | Any thread calls `await()` | Participating threads wait for each other |
+| Count direction | Counts down to 0 | Counts up to parties |
+| Barrier action | None | Optional Runnable when all arrive |
+| Use case | "Wait for N events" | "N threads synchronize at a point" |
+
+---
+
+### Exchanger
+
+Two threads exchange data at a synchronization point.
+
+```java
+Exchanger<List<String>> exchanger = new Exchanger<>();
+
+// Producer fills buffer, swaps with consumer's empty buffer
+Thread producer = new Thread(() -> {
+    List<String> buffer = new ArrayList<>();
+    while (true) {
+        buffer.add(produce());
+        if (buffer.size() == 100) {
+            buffer = exchanger.exchange(buffer); // swap full for empty
+            buffer.clear();
+        }
+    }
+});
+
+Thread consumer = new Thread(() -> {
+    List<String> buffer = new ArrayList<>();
+    while (true) {
+        buffer = exchanger.exchange(buffer); // swap empty for full
+        buffer.forEach(this::consume);
+    }
+});
+```
+
+**Use case:** Double-buffering pattern — one thread fills while other processes. Rare in production; `BlockingQueue` is usually simpler.
+
+---
+
+### BlockingQueue — Deep Dive
+
+| Implementation | Bounded | Ordering | Lock Strategy |
+|---------------|---------|----------|---------------|
+| `ArrayBlockingQueue` | Yes (fixed) | FIFO | Single lock |
+| `LinkedBlockingQueue` | Optional | FIFO | Separate put/take locks (higher throughput) |
+| `PriorityBlockingQueue` | No | Priority (heap) | Single lock |
+| `SynchronousQueue` | Zero capacity | Direct handoff | No storage — producer blocks until consumer takes |
+| `DelayQueue` | No | By delay expiry | Single lock |
+
+```java
+// Production pattern: bounded queue with backpressure
+BlockingQueue<Event> queue = new ArrayBlockingQueue<>(1000);
+
+// Producer — blocks if queue full (natural backpressure)
+queue.put(event);
+
+// Producer — non-blocking with timeout
+if (!queue.offer(event, 5, TimeUnit.SECONDS)) {
+    metrics.increment("queue.full.dropped");
+    deadLetterQueue.send(event);
+}
+
+// Consumer
+Event event = queue.take(); // blocks until available
+```
+
+**Kafka consumer pattern:** Internal Kafka consumer uses a blocking queue between the network thread (fetches records) and the processing thread (your poll loop).
+
+---
+
+### Object Monitor (wait/notify)
+
+Every Java object has an intrinsic monitor (lock + wait-set).
+
+```java
+// Classic producer-consumer with Object monitor
+synchronized (buffer) {          // acquire monitor
+    while (buffer.isEmpty()) {
+        buffer.wait();           // release monitor, enter wait-set
+    }
+    item = buffer.remove();
+    buffer.notifyAll();          // wake all threads in wait-set
+}
+```
+
+**Rules:**
+- `wait()`/`notify()`/`notifyAll()` must be called inside `synchronized` block on the same object
+- Always use `while` loop (not `if`) around `wait()` — spurious wakeups are allowed by JVM spec
+- `notify()` wakes one random thread; `notifyAll()` wakes all (safer but slower)
+
+**Why `notifyAll()` over `notify()`:** With `notify()`, if the wrong thread wakes up (e.g., a producer when the buffer is still full), it goes back to waiting and no one else is woken → potential livelock.
+
+---
+
+### Context Switching
+
+When the OS scheduler suspends one thread and resumes another on the same CPU core.
+
+**Cost per context switch:** ~1-10 microseconds (save/restore registers, flush CPU cache, TLB invalidation)
+
+```
+Thread A running → Timer interrupt / I/O block / yield()
+    → Save Thread A state (registers, PC, stack pointer)
+    → Load Thread B state
+    → Thread B running
+```
+
+**Impact in Java:**
+- More threads than CPU cores = more context switches = lower throughput
+- `synchronized` contention forces BLOCKED threads to context-switch
+- Thread pool sizing: `cores * 2` for I/O-bound minimizes unnecessary switches
+
+**How to measure:**
+```bash
+# Linux — context switches per second
+vmstat 1 | awk '{print $12}'  # cs column
+
+# Per-process
+pidstat -w -p <pid> 1
+
+# Java — thread states indicating excessive switching
+jstack <pid> | grep -c "BLOCKED"
+```
+
+---
+
+### Busy Spinning (Spin-Wait)
+
+Thread loops checking a condition instead of blocking (no context switch, but burns CPU).
+
+```java
+// Busy spin — ultra-low latency, wastes CPU
+while (!flag.get()) {
+    Thread.onSpinWait(); // Java 9+ hint to CPU (PAUSE instruction on x86)
+}
+
+// vs Blocking — saves CPU, higher latency
+synchronized (lock) {
+    while (!condition) lock.wait(); // context switch
+}
+```
+
+| Approach | Latency | CPU Usage | Use Case |
+|----------|---------|-----------|----------|
+| Busy spin | Nanoseconds | 100% core | Ultra-low-latency trading, LMAX Disruptor |
+| `Thread.onSpinWait()` | Nanoseconds (power-friendly) | High | Short expected waits |
+| `LockSupport.parkNanos()` | Microseconds | Low | Medium waits |
+| `wait()`/`Condition.await()` | Microseconds-ms | Minimal | General purpose |
+
+**When to use busy spinning:** Only when wait time is expected to be < context switch cost (~1-10μs). In backend microservices, almost never — use blocking queues. In low-latency systems (trading, real-time), it's common.
+
+---
+
+### Thread Dump Quick Reference
+
+```bash
+# Generate thread dump
+jstack <pid>                          # from outside
+kill -3 <pid>                         # SIGQUIT (prints to stdout)
+jcmd <pid> Thread.print               # modern alternative
+
+# In Kubernetes
+kubectl exec <pod> -- jstack 1
+
+# Key patterns to look for:
+# BLOCKED — waiting for monitor (lock contention)
+# WAITING (on object monitor) — wait() called
+# TIMED_WAITING (sleeping/parking) — sleep() or parkNanos()
+# "Found one Java-level deadlock" — JVM detected circular wait
+```
+
+**Reading a thread dump:**
+```
+"http-nio-8080-exec-5" #42 daemon prio=5 os_prio=0 tid=0x... nid=0x... BLOCKED
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at com.example.Service.process(Service.java:45)
+        - waiting to lock <0x000000076ab023f0> (a java.lang.Object)
+        - locked by "http-nio-8080-exec-3" (thread #38)
+```
+
+This tells you: thread exec-5 is blocked at line 45, waiting for a lock held by exec-3. Find what exec-3 is doing to understand the contention.
