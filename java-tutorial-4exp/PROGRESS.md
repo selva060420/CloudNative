@@ -51,16 +51,16 @@ Plus: 2 follow-up questions, 1 practice task, runnable code examples
 | 07 | Spring Boot | `07-spring-boot/README.md` | `springboot/` | ✅ DONE |
 | 08 | Microservices | `08-microservices/README.md` | `microservices/` | ✅ DONE |
 | 09 | REST API | `09-rest-api/README.md` | `restapi/` | ✅ DONE |
-| 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE |
+| 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL | 10 | SQL & NoSQL | `10-sql-nosql/README.md` | `core-java-examples/.../database/` | ❌ TODO | 🟡 Medium | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE | NoSQL | `10-sql-nosql/README.md` | `database/` | ✅ DONE |
 | 11 | Testing | `11-testing/README.md` | `testing/` | ✅ DONE |
 | 12 | System Design | `12-system-design/README.md` | `NONE/` | ✅ DONE |
 | 13 | DSA | `13-dsa/README.md` | `dsa/` | ✅ DONE |
-| 14 | Kafka & Messaging | `14-kafka-messaging/README.md` | `spring-boot-examples/.../kafka/` | ❌ TODO | 🟡 Medium |
-| 15 | Spring Security | `15-spring-security/README.md` | `spring-boot-examples/.../security/` | ❌ TODO | 🟡 Medium |
+| 14 | Kafka & Messaging | `14-kafka-messaging/README.md` | `spring-boot-examples/.../kafka/` | ✅ DONE |
+| 15 | Spring Security | `15-spring-security/README.md` | `spring-boot-examples/.../security/` | ✅ DONE |
 | 16 | Docker & Kubernetes | `16-docker-k8s/README.md` | *(no code)* | ✅ DONE |
 | 17 | CI/CD | `17-cicd/README.md` | *(no code)* | ✅ DONE | 🟡 Medium |
 
-**Completed: 15/17**
+**Completed: 17/17** ✅ ALL TOPICS DONE
 
 ## Backlog — Missed Topics ✅ DONE (2026-05-26)
 
