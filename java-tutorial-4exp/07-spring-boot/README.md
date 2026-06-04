@@ -144,16 +144,49 @@ Activation: `spring.profiles.active=prod` (env var, CLI arg, or in application.y
 
 Beans can be profile-specific: `@Profile("prod")`.
 
-### Q7: Constructor injection vs field injection — why prefer constructor?
+### Q7: Constructor Injection vs Field Injection — Why Prefer Constructor?
 
-| Aspect | Constructor Injection | Field Injection (@Autowired on field) |
-|---|---|---|
-| Immutability | Fields can be `final` | Cannot be final |
-| Testability | Easy to pass mocks in constructor | Requires reflection or Spring context |
-| Required deps | Compile-time enforcement | NPE at runtime if missing |
-| Circular deps | Fails fast at startup | May hide circular dependencies |
+**Constructor Injection (Recommended):**
+```java
+@Service
+public class OrderService {
+    private final PaymentGateway paymentGateway;
 
-**Best practice:** Constructor injection (Spring recommends it since 4.3 — `@Autowired` optional on single constructor).
+    public OrderService(PaymentGateway paymentGateway) { // @Autowired optional since 4.3
+        this.paymentGateway = paymentGateway;
+    }
+}
+```
+
+**Field Injection (Avoid):**
+```java
+@Service
+public class OrderService {
+    @Autowired
+    private PaymentGateway paymentGateway; // no final, needs reflection to test
+}
+```
+
+| Aspect | Constructor | Field | Setter |
+|---|---|---|---|
+| Immutability | ✅ `final` fields | ❌ | ❌ |
+| Testability | ✅ Pass mocks directly | ❌ Needs Spring context | ✅ |
+| Required deps | Compile-time enforced | NPE at runtime | Depends |
+| Circular deps | Fails fast at startup | Hides them | Hides them |
+| Optional deps | ❌ Awkward | ❌ | ✅ `@Autowired(required=false)` |
+
+**When to use what:**
+- Required deps → Constructor injection (+ Lombok `@RequiredArgsConstructor`)
+- Optional deps → Setter injection
+- Test classes only → Field injection is acceptable
+
+**Circular dependency fix:**
+```java
+public ServiceA(@Lazy ServiceB serviceB) { ... } // breaks the cycle
+```
+
+**30-sec answer:**
+> "Constructor injection is preferred because it allows `final` fields (immutability), enforces required deps at compile time, and makes unit testing easy — just pass mocks via constructor, no Spring context needed. Field injection uses reflection, hides dependencies, and makes testing harder. Since Spring 4.3, `@Autowired` is optional on a single constructor."
 
 ### Q8: What is @ConfigurationProperties?
 
